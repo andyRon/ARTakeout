@@ -1,3 +1,8 @@
+
+# 字体文件
+*.otf
+*.ttf
+
 # Compiled class file
 *.class
 
