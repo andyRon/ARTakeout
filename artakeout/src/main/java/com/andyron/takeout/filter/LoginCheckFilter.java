@@ -35,7 +35,12 @@ public class LoginCheckFilter implements Filter {
                 "/employee/logout",
                 "/backend/**",
                 "/front/**",
-                "/common/**" // 临时运行
+                "/common/**", // 临时运行
+                "/user/sendMsg",    // 移动端发送短信
+                "/user/login",       // 移动端登录
+
+//                "/swagger-ui.html",
+//                "/doc.html"
         };
         // 如果请求是不需处理的路径直接放行
         if (check(urls, requestURI)) {
@@ -54,6 +59,18 @@ public class LoginCheckFilter implements Filter {
             filterChain.doFilter(request, response);
             return;
         }
+
+        // 如已登录就直接放行（移动端）
+        if (request.getSession().getAttribute("user")  != null) {
+            log.info("用户一登录，id：{}", request.getSession().getAttribute("user"));
+
+            Long userId = (Long) request.getSession().getAttribute("user");
+            BaseContext.setCurrentId(userId);
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         log.info("用户未登录");
         // 如未登录，通过输出流方式想客户端页面响应数据
         response.getWriter().write(JSON.toJSONString(R.error("NOTLOGIN")));

@@ -4,6 +4,7 @@ import com.andyron.takeout.common.R;
 import com.andyron.takeout.dto.DishDto;
 import com.andyron.takeout.entity.Category;
 import com.andyron.takeout.entity.Dish;
+import com.andyron.takeout.entity.DishFlavor;
 import com.andyron.takeout.service.CategoryService;
 import com.andyron.takeout.service.DishFlavorService;
 import com.andyron.takeout.service.DishService;
@@ -85,5 +86,45 @@ public class DishController {
         log.info(dishDto.toString());
         dishService.updateWithFlavor(dishDto);
         return R.success("习惯菜品成功");
+    }
+
+//    @ApiOperation("根据条件查询对应的菜品数据")
+//    @GetMapping("/list")
+//    public R<List<Dish>> list(Dish dish) {
+//        LambdaQueryWrapper<Dish> qw = new LambdaQueryWrapper<>();
+//        qw.eq(dish.getCategoryId() != null, Dish::getCategoryId, dish.getCategoryId());
+//        qw.eq(Dish::getStatus, 1);
+//        qw.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
+//        List<Dish> list = dishService.list(qw);
+//        return R.success(list);
+//    }
+
+    /**
+     * 更新，方便前端使用
+     */
+    @ApiOperation("根据条件查询对应的菜品数据")
+    @GetMapping("/list")
+    public R<List<DishDto>> list(Dish dish) {
+        LambdaQueryWrapper<Dish> qw = new LambdaQueryWrapper<>();
+        qw.eq(dish.getCategoryId() != null, Dish::getCategoryId, dish.getCategoryId());
+        qw.eq(Dish::getStatus, 1);
+        qw.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
+        List<Dish> list = dishService.list(qw);
+
+        List<DishDto> dishDtoList = list.stream().map((item) -> {
+            DishDto dishDto = new DishDto();
+            BeanUtils.copyProperties(item, dishDto);
+            Category category = categoryService.getById(item.getCategoryId());
+            if (category != null) {
+                dishDto.setCategoryName(category.getName());
+            }
+            LambdaQueryWrapper<DishFlavor> DFqw = new LambdaQueryWrapper<>();
+            DFqw.eq(DishFlavor::getDishId, item.getId());
+            List<DishFlavor> dishFlavorList = dishFlavorService.list(DFqw);
+            dishDto.setFlavors(dishFlavorList);
+            return dishDto;
+        }).collect(Collectors.toList());
+
+        return R.success(dishDtoList);
     }
 }

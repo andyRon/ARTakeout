@@ -295,7 +295,7 @@
           methods:{
             //初始化数据
             initData(){
-              Promise.all([categoryListApi(),cartListApi({})]).then(res=>{
+              Promise.all([categoryListApi(),cartListApi({})]).then(res=>{  // all 表示两个请求必须同时成功
                 //获取分类数据
                 if(res[0].code === 1){
                   this.categoryList = res[0].data
