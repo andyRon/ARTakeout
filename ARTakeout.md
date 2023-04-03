@@ -821,6 +821,15 @@ https://www.aliyun.com/product/sms
 2. ﻿﻿在服务端UserController的sencMsg方法中，将随机生成的验证码缓存到Redis中，并设置有效期为5分钟
 3. 在服务端Usercontroller的login方法中，从Redis中获取缓存的验证码，如果登录成功则删除Redis中的验证码
 
+```xml
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+```
+
+
+
 ```java
             // 验证码保存到session
 //            session.setAttribute(phone, code);
@@ -880,6 +889,76 @@ redisTemplate.delete(key);
 ```
 
 
+
+
+
+### Spring Cache
+
+简化使用缓存的方式。
+
+##### 介绍
+
+Spring Cache是一个框架，实现了基于==注解==的缓存功能，只需要简单地加一个注解，就能实现缓存功能。
+
+Spring Cache提供了一层抽象，底层可以切换不同的cache实现。具体就是通过`CacheManager`接口来统一不同的缓存技术。
+
+CacheManager是Spring提供的各种缓存技术抽象接口。
+
+针对不同的缓存技术需要实现不同的CacheManager：
+
+![](images/image-20230403161927594.png)
+
+##### Spring Cache常用注解
+
+![](images/image-20230403162204415.png)
+
+在spring boot项目中，使用缓存技术只需在项目中导入相关缓存技术的依赖包，并在启动类上使用`@EnableCaching`开启缓存支持即可。
+
+例如，使用Redis作为缓存技术，只需要导入Spring data Redis的maven坐标即可。
+
+
+
+Spring Cache的基础功能在springweb的spring-context包内，不需要再另外导入包了：
+
+![](images/image-20230403162732853.png)
+
+基础是`ConcurrentMap`为基础实现缓存的。
+
+
+
+🔖 p165 基础缓存 添加数据是没有缓存
+
+#### Spring Caches使用方式
+
+在Spring Boot项目中使用Spring Cache的操作步骤(使用redis缓存技术）：
+
+1. ﻿﻿导入maven坐标
+    spring-boot-starter-data-redis, spring-boot-starter-cache
+
+2. ﻿﻿配置application.yml
+
+   ```yaml
+     redis:
+       host: 127.0.01
+       port: 6379
+       password:
+       database: 0
+     cache:
+       redis:
+         time-to-live: 1800000 # 设置缓存过期时间，可选
+   ```
+
+   
+
+3. ﻿﻿在启动类上加入@EnableCaching注解，开启缓存注解功能
+
+4. ﻿﻿在controller的方法上加入@Cacheable、@CacheEvict等注解，进行缓存操作
+
+
+
+### 缓存套餐数据
+
+🔖
 
 
 
