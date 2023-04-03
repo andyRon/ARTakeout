@@ -705,8 +705,6 @@ https://www.aliyun.com/product/sms
 
 
 
-
-
 ### 开发
 
 #### 需求分析
@@ -764,8 +762,6 @@ https://www.aliyun.com/product/sms
 
 
 
-
-
 ### 购物车
 
 #### 需求分析
@@ -795,23 +791,106 @@ https://www.aliyun.com/product/sms
 
 
 
+## Git
+
+## Linux 
+
+### 项目部署
+
+#### 手工部署项目
+
+#### 通过shell脚本自动部署项目
+
+
+
+## 缓存优化
+
+### 缓存环境搭建
+
+
+
+### 缓存短信验证码
+
+#### 实现思路
+
+前面我们己经实现了移动端手机验证码登录，随机生成的验证码我们是保存在HttpSession中的。
+
+现在需要改造为將验证码缓存在Redis中，具体的实现思路如下：
+
+1. ﻿﻿在服务端Usercontroller中注入RedisTemplate对象，用于操作Redis
+2. ﻿﻿在服务端UserController的sencMsg方法中，将随机生成的验证码缓存到Redis中，并设置有效期为5分钟
+3. 在服务端Usercontroller的login方法中，从Redis中获取缓存的验证码，如果登录成功则删除Redis中的验证码
+
+```java
+            // 验证码保存到session
+//            session.setAttribute(phone, code);
+            // 验证保存到Redis，设置有效期5min
+            redisTemplate.opsForValue().set(phone, code, 5, TimeUnit.MINUTES);
+```
+
+```java
+        // 从session中获取保存的验证码
+//        Object codeInSession = session.getAttribute(phone);
+        // 从Redis获取缓存的验证码
+        Object codeInSession = redisTemplate.opsForValue().get(phone);
+```
+
+```java
+            // 用户登录成功，删除Redis中缓存的验证码
+            redisTemplate.delete(phone);
+```
+
+
+
+### 缓存菜品数据
+
+#### 实现思路
+
+前面我们已经实现了移动端菜品查看功能，对应的服务端方法为DishController的list方法，此方法会根据前端提交的查询条件进行数据库查询操作。在高并发的情况下，频繁查询数据库会导致系统性能下降，服务端响应时间增长。现在需要对此方法进行缓存优化，提高系统的性能。
+
+具体的实现思路如下：
+
+1. ﻿﻿改造Dishcontroller的list方法，先从Redis中获取菜品数据，如果有则直接返回，无需查询数据库;如果没有则查询数据库，并将查询到的菜品数据放入Redis。
+2. ﻿﻿改造Dishcontroller的save 和update方法，加入清理缓存的逻辑
+
+> 注意：在使用缓存过程中，要注意**保证数据库中的数据和缓存中的数据一致**，如果数据库中的数据发生变化，需要及时清理缓存数据。
+
+```java
+// 动态构造Redis的key
+String key = "dish_" + dish.getCategoryId() + "_" + dish.getStatus();
+dishDtoList = (List<DishDto>) redisTemplate.opsForValue().get(key);
+if (dishDtoList != null) {
+  // 缓存中存在，就直接返回，不用查数据库
+  return R.success(dishDtoList);
+}
+
+// ...
+
+// 查询的心数据做缓存
+redisTemplate.opsForValue().set(key, dishDtoList, 60, TimeUnit.MINUTES);
+
+```
+
+
+
+```java
+// 清理对应分类下的菜品缓存数据
+String key = "dish_" + dishDto.getCategoryId() + "_1";
+redisTemplate.delete(key);
+```
+
+
+
+
+
+
+
 > 🔖 问题合集
 >
 > - idea 断点调试时，下一步需要等待 The application is running
 > - Java 接口 public是否可以省略
 > - 没有支付功能
+> - 后端登录后，前端不要再登录
 
 
 
-
-
-
-
-## Git
-
-Git能干什么：
-
-- 代码回溯
-- 版本切换
-- 多人协作
-- 远程备份
