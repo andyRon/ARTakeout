@@ -5,6 +5,12 @@ https://www.bilibili.com/video/BV13a411q753
 
 
 
+
+
+> http://localhost:8080/backend/index.html
+>
+> http://localhost:8080/front/index.html
+
 ## 软件开发整体介绍
 
 ### 软件开发流程
@@ -803,6 +809,16 @@ https://www.aliyun.com/product/sms
 
 
 
+## Redis课程
+
+
+
+
+
+----
+
+优化
+
 ## 缓存优化
 
 ### 缓存环境搭建
@@ -894,7 +910,7 @@ redisTemplate.delete(key);
 
 ### Spring Cache
 
-简化使用缓存的方式。
+简化使用缓存的方式。只需要简单的几个注解。
 
 ##### 介绍
 
@@ -912,29 +928,135 @@ CacheManager是Spring提供的各种缓存技术抽象接口。
 
 ![](images/image-20230403162204415.png)
 
+- `@EnableCaching`，开启缓存注解功能，使用在启动类上。
+
+- `@Cacheable`，在方法执行前spring先查看缓存中是否有数据，如果有数据，则直接返回缓存数据;若没有数据，调用方法并将方法返回值放到缓存中。【==查询==】
+
+- `@CachePut`，将方法的返回值放到缓存中，一般用在==新增==方法上。
+
+- `@CacheEvict`，将一条或多条数据从缓存中删除。【==删除、更新==】时都删除缓存
+
+
+
 在spring boot项目中，使用缓存技术只需在项目中导入相关缓存技术的依赖包，并在启动类上使用`@EnableCaching`开启缓存支持即可。
 
 例如，使用Redis作为缓存技术，只需要导入Spring data Redis的maven坐标即可。
 
+**pom文件中导入是哪个缓存，Spring Cache就使用那个缓存技术。**
 
 
-Spring Cache的基础功能在springweb的spring-context包内，不需要再另外导入包了：
+
+Spring Cache的基础功能在springweb的**spring-context**包内，不需要再另外导入包了：
 
 ![](images/image-20230403162732853.png)
 
-基础是`ConcurrentMap`为基础实现缓存的。
+`ConcurrentMapCacheManager`是`CacheManager`接口的基础实现，其使用`ConcurrentMap`为基础实现缓存的。
 
 
 
-🔖 p165 基础缓存 添加数据是没有缓存
+#### 测试项目【cache_demo】
 
-#### Spring Caches使用方式
+**SpEL**
+
+```java
+@RestController
+@RequestMapping("/user")
+@Slf4j
+public class UserController {
+
+    @Autowired
+    private CacheManager cacheManager;
+
+    @Autowired
+    private UserService userService;
+
+    /**
+     * CachePut：将方法返回值放入缓存
+     * value：缓存的名称，每个缓存名称下面可以有多个key，相当于某一类缓存
+     * key：缓存的key   SpEL
+     */
+    @CachePut(value = "userCache", key = "#user.id")
+    @PostMapping
+    public User save(User user){ // 没有@RequestBody，不需要JSON数据，提交普通的表单数据就可以
+        userService.save(user);
+        return user;
+    }
+
+    /**
+     * CacheEvict：清理指定缓存
+     * value：缓存的名称，每个缓存名称下面可以有多个key
+     * key：缓存的key
+     *  第一个参数的几种写法 #p0 #root.args[0] #id
+     */
+    @CacheEvict(value = "userCache", key = "#p0")  // 0是参数位置
+    //@CacheEvict(value = "userCache",key = "#root.args[0]")
+    //@CacheEvict(value = "userCache",key = "#id")  // 要和形参名相同
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id){
+        userService.removeById(id);
+    }
+
+    //@CacheEvict(value = "userCache",key = "#p0.id")
+    //@CacheEvict(value = "userCache",key = "#user.id")
+    //@CacheEvict(value = "userCache",key = "#root.args[0].id")
+    @CacheEvict(value = "userCache", key = "#result.id") // 更新时也删除缓存
+    @PutMapping
+    public User update(User user){
+        userService.updateById(user);
+        return user;
+    }
+
+    /**
+     * Cacheable：在方法执行前spring先查看缓存中是否有数据，如果有数据，则直接返回缓存数据；若没有数据，调用方法并将方法返回值放到缓存中
+     * value：缓存的名称，每个缓存名称下面可以有多个key
+     * key：缓存的key
+     * condition：条件，满足条件时才缓存数据
+     * unless：满足条件则不缓存
+     */
+    @Cacheable(value = "userCache", key = "#id", unless = "#result == null")
+    @GetMapping("/{id}")
+    public User getById(@PathVariable Long id){
+        User user = userService.getById(id);
+        return user;
+    }
+
+    /**
+     * 条件查询情况
+     * 不同的条件，对应不同的key
+     */
+    @Cacheable(value = "userCache",key = "#user.id + '_' + #user.name")
+    @GetMapping("/list")
+    public List<User> list(User user){
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(user.getId() != null, User::getId,user.getId());
+        queryWrapper.eq(user.getName() != null, User::getName,user.getName());
+        List<User> list = userService.list(queryWrapper);
+        return list;
+    }
+}
+```
+
+##### 改用redis做缓存
 
 在Spring Boot项目中使用Spring Cache的操作步骤(使用redis缓存技术）：
 
 1. ﻿﻿导入maven坐标
     spring-boot-starter-data-redis, spring-boot-starter-cache
 
+    ```xml
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-cache</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+    ```
+    
+    
+    
 2. ﻿﻿配置application.yml
 
    ```yaml
@@ -950,15 +1072,57 @@ Spring Cache的基础功能在springweb的spring-context包内，不需要再另
 
    
 
-3. ﻿﻿在启动类上加入@EnableCaching注解，开启缓存注解功能
+3. ﻿﻿在启动类上加入`@EnableCaching`注解，开启缓存注解功能
 
 4. ﻿﻿在controller的方法上加入@Cacheable、@CacheEvict等注解，进行缓存操作
 
 
 
-### 缓存套餐数据
+### 使用Spring Cache缓存套餐数据
 
-🔖
+#### 实现思路
+
+前面我们已经实现了移动端套餐查看功能，对应的服务端方法为Setmealcontroller的list方法，此方法会根据前端提袁的查询条件进行数据库查询操作。在高并发的情况下，频繁查询数据库会导致系统性能下降，服务端响应时间增长。
+
+现在需要对此方法进行缓存优化，提高系统的性能。
+
+具体的实现思路如下：
+
+1. ﻿﻿导入Spring Cache和Redis相关maven坐标
+2. ﻿﻿在application.yml中配置缓存数据的过期时间
+3. ﻿﻿在启动类上加入@EnableCaching注解，开启缓存注解功能
+4. ﻿﻿在Setmealcontroller的list方法上加入@Cacheable注解
+5. ﻿﻿在Setmealcontroller的save和delete方法上加入CacheEvict注解
+
+
+
+注意把返回结果`R`继承序列化，因为缓存时要把结果序列化
+
+报错：
+
+```java
+java.lang.IllegalArgumentException: DefaultSerializer requires a Serializable payload but received an object of type [com.andyron.takeout.common.R]
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
