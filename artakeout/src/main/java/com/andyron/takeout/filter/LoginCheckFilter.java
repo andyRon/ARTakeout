@@ -22,6 +22,7 @@ import java.io.IOException;
 public class LoginCheckFilter implements Filter {
     /**
      * 路径匹配器，支持通配符
+     * // TODO AntPathMatcher 以及spring工具类
      */
     public static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
     @Override
@@ -91,6 +92,4 @@ public class LoginCheckFilter implements Filter {
         }
         return false;
     }
-
-
 }

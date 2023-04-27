@@ -14,6 +14,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +38,7 @@ public class SetmealController {
 
     @ApiOperation("新增套餐")
     @PostMapping
+    @CacheEvict(value = "setmealCache", allEntries = true)
     public R<String> save(@RequestBody SetmealDto setmealDto) {
         log.info("套餐信息：{}", setmealDto.toString());
         setmealService.saveWithDish(setmealDto);
@@ -70,6 +73,7 @@ public class SetmealController {
     }
     @ApiOperation("删除套餐")
     @DeleteMapping
+    @CacheEvict(value = "setmealCache", allEntries = true)  // 删除一个套餐时，删除所有套餐缓存
     public R<String > remove(@RequestParam List<Long> ids) {
         log.info("ids:{}", ids);
         setmealService.removeWithDish(ids);
@@ -78,6 +82,7 @@ public class SetmealController {
 
     @ApiOperation("条件查询套餐数据")
     @GetMapping("/list")
+    @Cacheable(value = "setmealCache", key = "#setmeal.categoryId + '_' + #setmeal.status")
     public R<List<Setmeal>> list(Setmeal setmeal) {  // `@RequestBody`表示前端传输过来的是json对象，这里是请求行里的键值对直接使用实体对象就可以
         LambdaQueryWrapper<Setmeal> qw = new LambdaQueryWrapper<>();
         qw.eq(setmeal.getCategoryId() != null, Setmeal::getCategoryId, setmeal.getCategoryId());
