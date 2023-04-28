@@ -10,6 +10,8 @@ import com.andyron.takeout.service.SetmealService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -24,7 +26,7 @@ import java.util.stream.Collectors;
 /**
  * @author andyron
  **/
-@Api("套餐管理")
+@Api(tags = "套餐管理")
 @RestController
 @RequestMapping("/setmeal")
 @Slf4j
@@ -48,6 +50,11 @@ public class SetmealController {
 
     @ApiOperation("分页查询套餐")
     @GetMapping("/page")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "页码", required = true),
+            @ApiImplicitParam(name = "pageSize", value = "每页记录数", required = true),
+            @ApiImplicitParam(name = "name", value = "套餐名称", required = false)
+    })
     public R<Page> page(int page, int pageSize, String name) {
         Page<Setmeal> pageInfo = new Page<>(page, pageSize);
         LambdaQueryWrapper<Setmeal> qw = new LambdaQueryWrapper<>();

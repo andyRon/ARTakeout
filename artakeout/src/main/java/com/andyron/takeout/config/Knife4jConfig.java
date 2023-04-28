@@ -32,35 +32,18 @@ public class Knife4jConfig {
     @Bean
     public Docket adminApiConfig(){
         log.info("swagger 2 启动");
-        List<Parameter> pars = new ArrayList<>();
-        ParameterBuilder tokenPar = new ParameterBuilder();
-        tokenPar.name("token")
-                .description("用户token")
-                .defaultValue("")
-                .modelRef(new ModelRef("string"))
-                .parameterType("header")
-                .required(false)
-                .build();
-        pars.add(tokenPar.build());
-        //添加head参数end
-
-        Docket adminApi = new Docket(DocumentationType.SWAGGER_2)
-                .groupName("adminApi")
+        return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(adminApiInfo())
                 .select()
-                //只显示admin路径下的页面
-                .apis(RequestHandlerSelectors.basePackage("com.andyron"))
+                .apis(RequestHandlerSelectors.basePackage("com.andyron.takeout.controller"))
                 .paths(PathSelectors.any())
-                .build()
-                .globalOperationParameters(pars);
-        return adminApi;
+                .build();
     }
 
     private ApiInfo adminApiInfo(){
-
         return new ApiInfoBuilder()
-                .title("后台管理系统-API文档")
-                .description("本文档描述了后台管理系统微服务接口定义")
+                .title("XX外卖-API文档")
+                .description("本文档描述了XX外卖接口定义")
                 .version("1.0")
                 .contact(new Contact("andyron", "http://andyron.com", "rongming.2008@163.com"))
                 .build();

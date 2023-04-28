@@ -1585,6 +1585,261 @@ upstream targetserver {
 
 ## 前后端分离开发
 
+### 问题说明
+
+![](images/image-20230428152353795.png)
+
+- 开发人员同时负责前端和后端代码开发，分工不明确
+
+- 开发效率低
+
+- 前后端代码混合在一个工程中，不便于管理
+
+- 对开发人员要求高，人员招聘困难
+
+### 介绍
+
+前后端分离开发，就是在项目开发过程中，对于前端代码的开发由专门的前端开发人员负责，后端代码则由后端开发人员负责，这样可以做到分 工明确、各司其职，提高开发效率，前后端代码并行开发，可以加快项目开发进度。
+
+目前，前后端分离开发方式已经被越来越多的公司所采用，成为当前项目开发的主流开发方式。
+
+前后端分离开发后，从工程结构上也会发生变化，即前后端代码不再混合在同一个maven工程中，而是分为**前端工程**和**后端工程**。
+
+![](images/image-20230428152902033.png)
+
+### 开发流程
+
+前后端分离开发后，面临一个问题，就是前端开发人员和后端开发人员如何进行配合来共同开发一个项目？
+
+可以按照如下流程进行：
+
+![](images/image-20230428153222615.png)
+
+**==接口(API接口)==**就是一个http的请求地址，主要就是去定义：**请求路径、请求方式、请求参数、响应数据**等内容。
+
+![](images/image-20230428153320188.png)
+
+### 前端技术栈
+
+开发工具
+
+- ﻿﻿Visual Studio Code
+- ﻿﻿builder
+
+技术框架
+
+- ﻿﻿nodejs
+- ﻿﻿VUE
+- ﻿﻿ElementUl
+- ﻿﻿mock
+- ﻿﻿webpack
+
+## Yapi
+
+http://yapi.smart-xwork.cn/
+
+### 介绍
+
+YApi 是高效、易用、功能强大的 api 管理平台，旨在为开发、产品、测试人员提供更优雅的接口管理服务。可以帮助开发者轻松创建、发布、维护 AP1， YApi 还为用户提供了优秀的交互体验，开发人员只需利用平台提供的接口数据写入工具以及简单的点击操作就可以实现接口的管理。
+
+YApi让接口开发更简单高效，让接口的管理更具可读性、可维护性，让团队协作更合理。
+
+源码地址：https://github.com/YMFE/yapi
+
+要使用YApi，需要自己进行部署。
+
+### 部署
+
+#### MongoDB
+
+https://www.mongodb.com/try/download/community
+
+MongoDB下载解压就行
+
+```
+./mongod --dbpath=../data/db
+```
+
+端口：27017
+
+
+
+```sql
+查看正在使用的数据库：db
+切换数据库或者创建数据库：use 数据库名
+
+show dbs;
+# 查看所有用户账号信息
+db.system.users.find();
+db.stats();
+show roles;
+```
+
+```sql
+use admin
+db.createUser({ user: "andy", pwd: "33824", roles: [{ role: "userAdminAnyDatabase", db: "admin" }] })
+
+```
+
+
+
+### 使用方式
+
+🔖🔖，配置MongoDB账号出问题
+
+```shell
+➜  vendors git:(master) ✗ npm run install-server
+
+> yapi-vendor@1.11.0 install-server
+> node server/install.js
+
+(node:23169) Warning: Accessing non-existent property 'count' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:23169) Warning: Accessing non-existent property 'findOne' of module exports inside circular dependency
+(node:23169) Warning: Accessing non-existent property 'remove' of module exports inside circular dependency
+(node:23169) Warning: Accessing non-existent property 'updateOne' of module exports inside circular dependency
+error: MongoNetworkError: Authentication failed., mongodb Authentication failed
+log: mongodb load success...
+/Users/andyron/myfield/env/yapi/vendors/server/install.js:151
+      throw new Error(err.message);
+            ^
+
+Error: Cannot read properties of undefined (reading 'collection')
+    at /Users/andyron/myfield/env/yapi/vendors/server/install.js:151:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+```
+
+
+
+## Swagger
+
+### 介绍
+
+使用Swagger你只需要按照它的规范去定义接口及接口相关的信息，再通过Swagger衍生出来的一系列项目和工具，就可以做到生成各种格式的接口文档，以及在线接口调试页面等等。
+
+官网：https://swagger.io/
+
+knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案。
+
+
+
+```xml
+    <dependency>
+      <groupId>com.github.xiaoymin</groupId>
+      <artifactId>knife4j-spring-boot-starter</artifactId>
+      <version>3.0.2</version>
+    </dependency>
+```
+
+### 使用方式
+
+操作步骤：
+
+1. ﻿﻿导入knife4的maven坐标
+2. ﻿﻿导入knife4j相关配置类
+3. ﻿﻿设置静态资源，否则接口文档页面无法访问
+4. ﻿﻿在LoginCheckFilter中设置不需要处理的请求路径
+
+
+
+### 常用注解
+
+![](images/image-20230428193706816.png)
+
+```java
+@ApiOperation("分页查询套餐")
+@GetMapping("/page")
+@ApiImplicitParams({
+  @ApiImplicitParam(name = "page", value = "页码", required = true),
+  @ApiImplicitParam(name = "pageSize", value = "每页记录数", required = true),
+  @ApiImplicitParam(name = "name", value = "套餐名称", required = false)
+})
+public R<Page> page(int page, int pageSize, String name) {
+}
+```
+
+
+
+## 项目部署
+
+### 部署架构
+
+![](images/image-20230428195618493.png)
+
+### 部署环境说明
+
+服务器：
+
+- ﻿﻿192.168.138.100（服务器A）
+   Nginx：部署前端项目、配置反向代理
+   Mysql：主从复制结构中的主库
+- ﻿192.168.138.101（服务器B）
+   jdk：运行java项目
+   git：版本控制工具
+   maven：项目构建工具
+   jar: Sorina Boot项目打成jar包基于内置Tomcat运行
+   Mysql：主从复制结构中的从库
+- ﻿﻿172.17.2.94（服务器C）
+   Redis：缓存中间件
+
+
+
+### 部署前端项目
+
+🔖p190
+
+![](images/image-20230428200626277.png)
+
+
+
+### 部署后端项目
+
+🔖p191
+
+
+
+```shell
+#!/bin/sh
+echo =================================
+echo  自动化部署脚本启动
+echo =================================
+
+echo 停止原来运行中的工程
+APP_NAME=reggie_take_out
+
+tpid=`ps -ef|grep $APP_NAME|grep -v grep|grep -v kill|awk '{print $2}'`
+if [ ${tpid} ]; then
+    echo 'Stop Process...'
+    kill -15 $tpid
+fi
+sleep 2
+tpid=`ps -ef|grep $APP_NAME|grep -v grep|grep -v kill|awk '{print $2}'`
+if [ ${tpid} ]; then
+    echo 'Kill Process!'
+    kill -9 $tpid
+else
+    echo 'Stop Success!'
+fi
+
+echo 准备从Git仓库拉取最新代码
+cd /usr/local/javaapp/reggie_take_out
+
+echo 开始从Git仓库拉取最新代码
+git pull
+echo 代码拉取完成
+
+echo 开始打包
+output=`mvn clean package -Dmaven.test.skip=true`
+
+cd target
+
+echo 启动项目
+nohup java -jar reggie_take_out-1.0-SNAPSHOT.jar &> reggie_take_out.log &
+echo 项目启动完成
+```
+
+
+
 
 
 > 🔖 问题合集
@@ -1593,6 +1848,3 @@ upstream targetserver {
 > - Java 接口 public是否可以省略
 > - 没有支付功能
 > - 后端登录后，前端不要再登录
-
-
-
