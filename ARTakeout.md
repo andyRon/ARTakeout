@@ -1106,25 +1106,279 @@ java.lang.IllegalArgumentException: DefaultSerializer requires a Serializable pa
 
 
 
+## MySQL主从复制
+
+读写分离
+
+![image-20230427205455926](images/image-20230427205455926.png)
+
+### mysql主从复制介绍
+
+mysql主从复制是一个异步的复制过程，底层是基于mysql数据库自带的==二进制日志==功能。就是一台或多台MySQL数据库(slave，即从库）从另一台MySQL数据库（master，，即主库）进行日志的复制然后再解析日志并应用到自身，最终实现从库的数据和主库的数据保持一致。MysQL主从复制是MySQL 数据库自带功能，无需借助第三方工具。
+
+MySQL复制过程分成三步：
+
+- ﻿master將改变记录到二进制日志 (binary log)
+- ﻿﻿slave将master的binary log拷贝到它的==中继日志== (relay log）
+- ﻿slave重做中继日志中的事件，将改变应用到自己的数据库中
+
+![](images/image-20230427210056698.png)
+
+主库一个，从库多个
+
+### 实现mysql主从复制
+
+#### 配置-前置条件
+
+提前准备好两台服务器，分别安装Mysql并启动服务成功
+
+- ﻿主库Master  10.211.55.5
+- ﻿从库Slave   10.211.55.6
+
+#### 配置-主库Master
+
+第一步：修改Mysql数据库的配置文件/etc/my.cnf
+
+```mysql
+[mysqldl]
+log-bin=mysql-bin #[必须]启用二进制日志
+server-id=100  	#[必须]服务器唯一ID
+```
+
+第二步：
+
+```shell
+systemcl restart mysqld
+```
+
+第三步：登录Mysql数据库，执行下面SQL
+
+```mysql
+GRANT REPLICATION SLAVE ON *.* to 'xiaoming'@'%' identified by 'Root@123456';
+```
+
+mysql8，需要先创建用户，再赋权：
+
+```mysql
+create user 'xiaoming'@'%' identified by 'Root@123456';
+Grant REPLICATION SlAVE ON *.* to 'xiaoming'@'%';
+-------
+
+create user 'xiaoming2'@'%' identified WITH 'mysql_native_password' by 'Root@123456';
+Grant REPLICATION SlAVE ON *.* to 'xiaoming2'@'%';
+FLUSH PRIVILEGES;
+```
+
+
+
+注：上面SQL的作用是创建一个用户xiaoming，密码为Root@123456，并且给xiaoming用户授予**REPLICATION SLAVE** 权限。常用于建立复制时所需要用到的用户权限，也就是slave必须被master授权具有该权限的用户，才能通过该用户复制。
+
+第四步：登录Mysql数据库，执行下面SQL，记录下结果中**File**和**Position**的值`show master status;`
+
+```shell
+mysql> show master status;
++------------------+----------+--------------+------------------+-------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |
++------------------+----------+--------------+------------------+-------------------+
+| mysql-bin.000001 |      691 |              |                  |                   |
++------------------+----------+--------------+------------------+-------------------+
+1 row in set (0.01 sec)
+```
+
+注：上面SQL的作用是查看Master的状态，执行完此SQL后不要再执行任何操作
+
+
+
+#### 配置-从库Slave
+
+第一步：修改Mysql数据库的配置文件/etc/my.cnf
+
+```mysql
+[mysqld]
+server-id=101 #[必须]服务器唯一ID
+```
+
+第二步：重启
+
+第三步：执行sql：
+
+```mysql
+CHANGE MASTER TO master_host='10.211.55.5', master_user='xiaoming', master_password='Root@123456', master_log_file='mysql-bin.000001', master_log_pos=691;
+
+start slave;
+
+
+
+CHANGE MASTER TO master_host='10.211.55.5', master_user='xiaoming2', master_password='Root@123456', master_log_file='mysql-bin.000001', master_log_pos=1580;
+```
+
+
+
+```mysql
+stop slave;
+```
+
+![](images/image-20230427214957399.png)
+
+第四步：查看从数据库的状态
+
+```mysql
+show slave status;
+```
+
+![](images/image-20230427215522078.png)
+
+```mysql
+show slave status \G;
+```
+
+查看错误字段：
+
+```
+Last_IO_Errno: 2061
+Last_IO_Error: error connecting to master 'xiaoming@10.211.55.5:3306' - retry-time: 60 retries: 6 message: Authentication plugin 'caching_sha2_password' reported error: Authentication requires secure connection.
+```
+
+>  🔖解决https://blog.csdn.net/wawa8899/article/details/86689618
+>
+> MySQL8.0默认指定使用需要SSL的身份验证插件caching_sha2_password，而我们在创建同步复制账号时候没有指定REQUIRE SSL。为了降低这件事情的复杂性，我们选择了社区的解决方法，选择绕过SSL插件的验证，改为mysql_native_password验证来做同步复制。
+
+> 虚拟机休眠后（第二天，session断开重连后），需要重现更改master_log_pos
+>
+> ```mysql
+> stop slave;
+> CHANGE MASTER TO master_host='10.211.55.5', master_user='xiaoming2', master_password='Root@123456', master_log_file='mysql-bin.000001', master_log_pos=xxxx;
+> start slave;
+> ```
+>
+> 否则出现类似错误：
+>
+> ```
+> Last_SQL_Errno: 1049
+> Last_SQL_Error: Coordinator stopped because there were error(s) in the worker(s). The most recent failure being: Worker 1 failed executing transaction 'ANONYMOUS' at master log mysql-bin.000001, end_log_pos 22
+> ```
+>
+> 
+
+
+
+### 读写分离案例
+
+#### 背景
+
+面对日益增加的系统访问量，数据库的吞吐量面临着巨大瓶颈。对于同一时刻有大量并发读操作和较少写操作类型的应用系统来说，将数据库拆分为主库和从库，主库负责处理事务性的增删改操作，从库负责处理查询操作，能够有效的避免由数据更新导致的行锁，使得整个系统的查询性能得到极大的改善。
+
+![](images/image-20230428074627004.png)
+
+#### Sharding-JDBC介绍
+
+Sharding-JDBC定位为轻量级ava框架，在Java的JDBC层提供的额外服务。它使用客户端直连数据库，以jar包形式提供服务，无需额外部署和依赖，可理解为增强版的JDBC驱动，完全兼容JDBC和各种ORM框架。
+
+使用Sharding-JDBC可以在程序中轻松的实现数据库读写分离。
+
+- ﻿适用于任何基于JDBC的ORM框架，如：JPA, Hibernate, Mybatis, Spring JDBC Template或直接使用JDBC。
+- ﻿支持任何第三方的数据库连接池，如：DBCP, C3P0, BoneCP, Druid, HikariCP等。
+- ﻿支持任意实现JDBC规范的数据库。目前支持MysQL, Oracle, SQLServer， PostgresQL以及任何遵循SQL92标准的数据库。
+
+### 入门案例
+
+使用Sharding-JDBC实现读写分离步骤：
+
+1. ﻿﻿导入maven坐标
+
+```xml
+    <dependency>
+      <groupId>org.apache.shardingsphere</groupId>
+      <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
+      <version>4.0.0-RC1</version>
+    </dependency>
+```
+
+
+
+2. ﻿﻿在配置文件中配置读写分离规则
+
+```yaml
+server:
+  port: 8080
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: ASSIGN_ID
+spring:
+  shardingsphere:
+    datasource:
+      names:
+        master,slave
+    master:
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://10.211.55.5:3306/rw?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      username: root
+      password: 33824
+    slave:
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://10.211.55.6:3306/rw?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      username: root
+      password: 33824
+    masterslave:
+      # 读写分离 负载均衡配置，round_robin为轮询
+      load-balance-algorithm-type: round_robin
+      # 最终的数据源名称
+      name: dataSource
+      # 主库数据源名称
+      master-data-source-name: master
+      # 从库数据源名称列表，多个用逗号隔开
+      slave-data-source-names: slave
+    props:
+      sql:
+        show: true  # 在控制台开启SQL显示
+```
+
+
+
+3. ﻿﻿在配置文件中配置**允许bean定义覆盖**配置项
+
+错误：
+
+```
+Description:
+
+The bean 'dataSource', defined in class path resource [org/apache/shardingsphere/shardingjdbc/spring/boot/SpringBootConfiguration.class], could not be registered. A bean with that name has already been defined in class path resource [com/alibaba/druid/spring/boot/autoconfigure/DruidDataSourceAutoConfigure.class] and overriding is disabled.
+
+Action:
+
+Consider renaming one of the beans or enabling overriding by setting spring.main.allow-bean-definition-overriding=true
+
+```
+
+原因是`SpringBootConfiguration`和`DruidDataSourceAutoConfigure`都配置了数据源，冲突了。
+
+需要配置允许覆盖
+
+```yaml
+spring:
+  main:
+    # 允许bean定义覆盖Spring的，DruidDataSourceAutoConfigure覆盖SpringBootConfiguration的中数据源
+    allow-bean-definition-overriding: true
+```
+
+🔖报错
+
+```
+```
+
+### 项目中实现读写分离
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## Nginx
 
 
 
