@@ -1,5 +1,6 @@
 package com.andyron.takeout.entity;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 /**
  * 订单
  */
+@ApiModel("订单")
 @Data
 public class Orders implements Serializable {
 

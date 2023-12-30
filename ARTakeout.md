@@ -10,6 +10,12 @@ https://www.bilibili.com/video/BV13a411q753
 > http://localhost:8080/backend/index.html
 >
 > http://localhost:8080/front/index.html
+>
+> http://localhost:8080/doc.html
+>
+> 前端页面获取的，值得研究
+
+
 
 ## 软件开发整体介绍
 
@@ -151,7 +157,11 @@ this.$refs.loginForm.validate(async (valid) => {
 
 ![](images/image-20230331110257333.png)
 
-🔖 p18 浏览器js调试
+p18 浏览器js调试
+
+![](images/image-20231123162641993.png)
+
+在浏览器中调试js，后一个按钮式是单步调试，前一个是跳过断点放行。
 
 ## 员工管理
 
@@ -212,7 +222,7 @@ return R.Success("新增员工成功");
 
 4、Controller将查询到的分页数据响应给页面
 
-5、页面接收到分页数据并通过Elementul的Table组件展示到页面上
+5、页面接收到分页数据并通过ElementUI的Table组件展示到页面上
 
 
 
@@ -398,7 +408,15 @@ ThreadLocal常用方法：
 
 ### 删除分类
 
+#### 需求分析
 
+在分类管理列表页面，可以对某个分类进行删除操作。需要注意的是当分类关联了菜品或套餐时，次分类不允许删除。
+
+#### 代码编写
+
+
+
+#### 功能完善
 
 要完善分类删除功能，需要先准备基础的类和接口：
 
@@ -409,9 +427,7 @@ ThreadLocal常用方法：
 
 
 
-🔖 后面调试部分
-
-
+p47 后面调试部分
 
 ### 修改分类
 
@@ -1848,3 +1864,8 @@ echo 项目启动完成
 > - Java 接口 public是否可以省略
 > - 没有支付功能
 > - 后端登录后，前端不要再登录
+
+
+
+
+

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -152,5 +153,24 @@ public class DishController {
         redisTemplate.opsForValue().set(key, dishDtoList, 60, TimeUnit.MINUTES);
 
         return R.success(dishDtoList);
+    }
+
+    // TODO @RequestParam @RequestBody
+    @ApiOperation("停售、起售")
+    @PostMapping("/status/{status}")
+    public R status(@PathVariable Integer status
+                    , @RequestParam String ids
+//            , @RequestBody String ids
+    ) {
+        if (status == 0) {
+            LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper<>();
+//            wrapper.in("id", 1, 2);
+
+//            dishService.update().
+        } else {
+
+        }
+
+        return R.success("操作成功");
     }
 }

@@ -2,6 +2,7 @@ package com.andyron.takeout.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -9,6 +10,7 @@ import java.math.BigDecimal;
 /**
  * 订单明细
  */
+@ApiModel("订单明细")
 @Data
 public class OrderDetail implements Serializable {
 

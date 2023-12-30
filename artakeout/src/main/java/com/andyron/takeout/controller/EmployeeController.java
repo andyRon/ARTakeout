@@ -34,7 +34,8 @@ public class EmployeeController {
         String password = employee.getPassword();
         password = DigestUtils.md5DigestAsHex(employee.getPassword().getBytes());
         LambdaQueryWrapper<Employee> qw = new LambdaQueryWrapper<>();
-        qw.eq(Employee::getUsername, employee.getUsername()); // TODO ::
+        // :: 是java8引入的，叫做方法引用
+        qw.eq(Employee::getUsername, employee.getUsername());
         Employee emp = employeeService.getOne(qw);
         if (emp == null) {
             return R.error("登录失败");
@@ -87,7 +88,7 @@ public class EmployeeController {
         employeeService.page(pageInfo, qw);
         return R.success(pageInfo);
     }
-
+    // TODO  哪些人可以修改员工信息？怎么分辨管理员
     @ApiOperation("根据id修改员工信息")
     @PutMapping
     public R<String> update(HttpServletRequest request, @RequestBody Employee employee) {
