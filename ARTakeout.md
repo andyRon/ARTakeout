@@ -1,11 +1,7 @@
 外卖
-------
+----
 
 https://www.bilibili.com/video/BV13a411q753
-
-
-
-
 
 > http://localhost:8080/backend/index.html
 >
@@ -14,8 +10,6 @@ https://www.bilibili.com/video/BV13a411q753
 > http://localhost:8080/doc.html
 >
 > 前端页面获取的，值得研究
-
-
 
 ## 软件开发整体介绍
 
@@ -26,25 +20,17 @@ https://www.bilibili.com/video/BV13a411q753
 ### 角色分工
 
 - 项目经理：对整个项目负责，任务分配、把控进度
-
 - 产品经理：进行需求调研，输出需求调研文档、产品原型等
-
 - UI设计师：根据产品原型输出界面效果图
-
 - 架构师：项目整体架构设计、技术选型等
-
 - 开发工程师：代码实现
-
 - 测试工程师：编写测试用例，输出测试报告
-
 - 运维工程师：软件环境搭建、项目上线
 
 ### 软件环境
 
 - 开发环境(development)：开发人员在开发阶段使用的环境，一般外部用户无法访问
-
 - 测试环境(testing)：专门给测试人员使用的环境，用于测试项目，一般外部用户无法访问
-
 - 生产环境(production)：即线上环境，正式提供对外服务的环境
 
 ## 项目介绍
@@ -85,8 +71,6 @@ https://www.bilibili.com/video/BV13a411q753
 - 后台系统普通员工：登录后台管理系统，对菜品、套餐、订单等进行管理
 - C端用户：登录移动端应用，可以浏览菜品、添加购物车、设置地址、在线下单等
 
-
-
 ## 开发环境搭建
 
 ### 数据库
@@ -95,11 +79,7 @@ https://www.bilibili.com/video/BV13a411q753
 
 ![](images/image-20230330170000470.png)
 
-
-
 项目名：artakeout
-
-
 
 ## 后台登录、退出
 
@@ -107,11 +87,7 @@ admin
 
 123456
 
-
-
 ![](images/image-20230330201935750.png)
-
-
 
 ```js
 this.$refs.loginForm.validate(async (valid) => {
@@ -143,8 +119,8 @@ this.$refs.loginForm.validate(async (valid) => {
 
 #### 实现步骤
 
-1. ﻿﻿创建自定义过滤器`LoginCheckFiltter`
-2. ﻿﻿在启动类上加入注解`@Servletcomponentscan`
+1. ﻿﻿创建自定义过滤器 `LoginCheckFiltter`
+2. ﻿﻿在启动类上加入注解 `@Servletcomponentscan`
 3. ﻿﻿完善过滤器的处理逻辑
 
 过滤器具体的处理逻辑如下：
@@ -176,8 +152,6 @@ employee表中对username字段加入了唯一约束，因为username是员工�
 
 3、service调用Mapper操作数据库，保存数据
 
-
-
 前面的程序还存在一个问题，就是当我们在新增员工时输入的账号已经存在，由于employee表中对该宇段加入了唯一约束，此时程序会抛出异常：
 
 ```java
@@ -199,8 +173,6 @@ return R.Success("新增员工成功");
 
 2﻿﻿. 使用异常处理器进行全局异常捕获
 
-
-
 #### 小结
 
 1. ﻿﻿根据产品原型明确业务需求
@@ -208,8 +180,6 @@ return R.Success("新增员工成功");
 3. ﻿﻿通过debug断点调试跟踪程序执行过程
 
 ![](images/image-20230331111059825.png)
-
-
 
 ### 员工信息分页查询
 
@@ -224,8 +194,6 @@ return R.Success("新增员工成功");
 
 5、页面接收到分页数据并通过ElementUI的Table组件展示到页面上
 
-
-
 ### 启用/禁用员工账号
 
 #### 需求分析
@@ -234,11 +202,7 @@ return R.Success("新增员工成功");
 
 需要注意，只有管理员 (admin用户）可以对其他普通用户进行启用、禁用操作，所以普通用户登录系统后启用、禁用按钮不显示。
 
-
-
 ![](images/image-20230331121509814.png)
-
-
 
 #### 功能测试
 
@@ -265,7 +229,6 @@ SQL执行的结果是更新的数据行数为0，仔细观察id的值，和数�
 具体实现步骤：
 
 1. 提供对象转换器JacksonObjectMapper，基于jackson进行ava对象到ison数据的转换（资料中已经提供，直接复制到项目中使用）
-
 2. 在WebMvcConfig配置类中扩展Spring mvc的消息转换器，在此消息转换器中使用提供的对象转换器进行ava对象到jison数据的转换
 
 ```java
@@ -288,15 +251,12 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 }
 ```
 
-
-
 ### 编辑员工信息
 
 梳理一下操作过程和对应的程序的执行流程：
 
 1. ﻿﻿点击编辑按钮时，页面跳转到add.html，并在url中携带参数[员工id]
 2. ﻿﻿在add.htm页面获取url中的参数[员工id]
-
 3. 发送ajax请求，请求服务端，同时提交员工id参数
 4. ﻿﻿服务端接收请求，根据员工id查询员工信息，将员工信息以json形式响应给页面
 5. ﻿﻿页面接收服务端响应的json数据，通过VUE的数据绑定进行员工信息回显
@@ -324,11 +284,8 @@ Mybatis Plus公共字段自动填充，也就是在插入或者更新的时候�
 
 实现步骤：
 
-1. 在实体类的属性 上加入`@TableField`注解，指定自动填充的策略
-
-2. 按照框架要求编写元数据对象处理器，在此类中统一为公共字段赋值，此类需要实现`MetaObjectHandler`接口
-
-
+1. 在实体类的属性 上加入 `@TableField`注解，指定自动填充的策略
+2. 按照框架要求编写元数据对象处理器，在此类中统一为公共字段赋值，此类需要实现 `MetaObjectHandler`接口
 
 #### 功能完善
 
@@ -340,14 +297,10 @@ Mybatis Plus公共字段自动填充，也就是在插入或者更新的时候�
 
 可以使用ThreadLocal来解决此问题，它是JDK中提供的一个类。
 
-
-
 在学习Threadlocal之前，我们需要先确认一个事情，就是客户端发送的每次http请求，对应的在服务端都会分配一个新的线程来处理，在处理过程中涉及到下面类中的方法都属于相同的一个线程：
 
 1. LoginCheckFilter的doFilter方法
-
 2. EmployeeController的update方法
-
 3. MyMetaObjectHandler的updateFill方法
 
 可以在上面的三个方法中分别加入下面代码(获取当前线程id）：
@@ -357,8 +310,6 @@ log.info("线程id：{}", Thread.currentThread().getId());
 ```
 
 执行编辑员工功能进行验证，通过观察控制台输出可以发现，一次请求对应的线程id是相同的。
-
-
 
 ##### 什么是ThreadLocal?
 
@@ -379,8 +330,6 @@ ThreadLocal常用方法：
 2. ﻿﻿在LoginCheckFilter的doFilter方法中调用BaseContext来设置当前登录用户的id
 3. ﻿﻿在MyMetaObjectHandler的方法中调用BaseContext获取登录用户的id
 
-
-
 ### 新增分类
 
 后台系统中可以管理分类信息，分类包括两种类型，分别是菜品分类和套餐分类。当我们在后台系统中添加菜品时需要选择一个菜品分类，当我们在后台系统中添加一个套餐时需要选择一个套餐分类，在移动端也会按照菜品分类和套餐分类来展示对应的菜品和套餐。
@@ -397,14 +346,11 @@ ThreadLocal常用方法：
 
 1. ﻿﻿页面(backend/page/category/list.html)发送ajax清求，将新増分类窗口输入的数据以json形式提交到服多端
 2. ﻿﻿服务端Controller接收页面提交的数据并调用Service将数据进行保存
-
 3. Service凋用Mapper操作数据库，保存数据
 
 可以看到新增菜品分类和新增套餐分类请求的服务端地址和提交的json数据结构相同，所以服务端只需要提供一个方法统一处理即可。
 
 ### 分类信息分析查询
-
-
 
 ### 删除分类
 
@@ -413,8 +359,6 @@ ThreadLocal常用方法：
 在分类管理列表页面，可以对某个分类进行删除操作。需要注意的是当分类关联了菜品或套餐时，次分类不允许删除。
 
 #### 代码编写
-
-
 
 #### 功能完善
 
@@ -425,19 +369,13 @@ ThreadLocal常用方法：
 3. Service接口DishService和 Setmealservice
 4. ﻿﻿Service实现类 DishServicelmpl和SetmealServicelmpl
 
-
-
 p47 后面调试部分
 
 ### 修改分类
 
-
-
 ## 菜品管理
 
 🔖 起售、停售
-
-
 
 ### 文件上传下载
 
@@ -449,8 +387,7 @@ p47 后面调试部分
 
 文件上传时，对页面的form表单有如下要求：
 
--  method="post"  采用post方式提交数据
-
+- method="post"  采用post方式提交数据
 - ﻿enctype="multipart/form-data"   采用multipart格式上传文件
 - ﻿﻿type="file"  使用input的file控件上传
 
@@ -461,7 +398,7 @@ p47 后面调试部分
 - ﻿﻿commons-fileupload
 - ﻿﻿commons-io
 
-Spring框架在Spring-web包中对文件上传进行了封装，大大简化了服务端代码，我们只需要在Controller的方法中声明一个`MultipartFile`类型的参数即可接收上传的文件。
+Spring框架在Spring-web包中对文件上传进行了封装，大大简化了服务端代码，我们只需要在Controller的方法中声明一个 `MultipartFile`类型的参数即可接收上传的文件。
 
 #### 文件下载介绍
 
@@ -474,8 +411,6 @@ Spring框架在Spring-web包中对文件上传进行了封装，大大简化了�
 
 通过浏览器进行文件下载，本质上就是服务端将文件以流的形式写回浏览器的过程。
 
-
-
 ![](images/image-20230401031053869.png)
 
 ### 新增菜品
@@ -485,7 +420,6 @@ Spring框架在Spring-web包中对文件上传进行了封装，大大简化了�
 所以在新增菜品时，涉及到两个表：
 
 - dish菜品表
-
 - dish flavor 菜品口味表
 
 在开发业务功能前，先将需要用到的类和接口基本结构创建好：
@@ -505,8 +439,6 @@ Spring框架在Spring-web包中对文件上传进行了封装，大大简化了�
 
 开发新增菜品功能，其实就是在服务端编写代码去处理前端页面发送的这4次请求即可。
 
-
-
 #### 代码开发DTO
 
 DTO，全称为Data Transfer object，即数据传输对象，一般用于展示层与服务层之问的数据传输。
@@ -521,10 +453,6 @@ public class DishDto extends Dish {
     private Integer copies;
 }
 ```
-
-
-
-
 
 ```json
 {
@@ -560,19 +488,9 @@ public class DishDto extends Dish {
 }
 ```
 
-
-
-
-
-
-
-
-
 ### 菜品信息分页查询
 
 🔖  一个页面好多请求，影响效率吗？怎么改进
-
-
 
 ### 修改菜品
 
@@ -584,8 +502,6 @@ public class DishDto extends Dish {
 4. ﻿﻿点击保存按钮，页面发送ajax请求，将修改后的菜品相关数据以son形式提交到服务端
 
 开发修改菜品功能，其实就是在服务端编写代码去处理前端页面发送的这4次请求即可。
-
-
 
 ## 套餐管理
 
@@ -608,7 +524,6 @@ public class DishDto extends Dish {
 所以在新增套餐时，涉及到两个表：
 
 - setmeal  套餐表
-
 - setmeal_dish  套餐菜品关系表
 
 #### 代码开发
@@ -633,15 +548,11 @@ public class DishDto extends Dish {
 
 开发新增套餐功能，其实就是在服务端编写代码去处理前端页面发送的这6次请求即可。
 
-
-
 ### 套餐信息分页查询
-
-
 
 ### 删除套餐
 
-在套餐管理列表页面点击删除按钮，可以删除对应的套餐信息。也可以通过复选框选择多个套餐，点击批量删除按钮一次删除多个套餐。注意，<u>对于状态为售卖中的套餐不能删除，需要先停售，然后才能删除。</u>
+在套餐管理列表页面点击删除按钮，可以删除对应的套餐信息。也可以通过复选框选择多个套餐，点击批量删除按钮一次删除多个套餐。注意，`<u>`对于状态为售卖中的套餐不能删除，需要先停售，然后才能删除。`</u>`
 
 梳理一下删除套餐时前端页面和服务端的交互过程：
 
@@ -650,7 +561,6 @@ public class DishDto extends Dish {
    ```
    http://localhost:8080/setmeal?ids=1641895881319911426
    ```
-
 2. ﻿﻿删除多个套餐时，页面发送ajax请求，根据提交的多个套餐id删除对应套餐
 
    ```
@@ -660,8 +570,6 @@ public class DishDto extends Dish {
 开发删除套餐功能，其实就是在服务端编写代码去处理前端页面发送的这2次请求即可。
 
 删除单个套餐和批量删除套餐请求的地址和请求方式都是相同的，不同的则是传递的id个数，所以在服务端可以提供一个方法来统一处理。
-
-
 
 ## 手机验证码登录
 
@@ -674,9 +582,7 @@ public class DishDto extends Dish {
 常用短信服务：
 
 - 阿里云
-
 - 华为云
-
 - ﻿腾讯云
 - ﻿京东
 - ﻿梦网
@@ -689,7 +595,6 @@ public class DishDto extends Dish {
 应用场景：
 
 - 验证码。
-
 - ﻿短信通知
 - ﻿推广短信
 
@@ -697,17 +602,11 @@ https://www.aliyun.com/product/sms
 
 🔖P82 阿里云控制台的一些操作
 
-
-
 设置短信签名
 
 短信签名是短信发送者的署名，表示发送方的身份。
 
-
-
 设置短信模版
-
-
 
 ```xml
 	<!-- 阿里云SMS -->
@@ -723,10 +622,6 @@ https://www.aliyun.com/product/sms
     </dependency>
 ```
 
-
-
-
-
 ### 开发
 
 #### 需求分析
@@ -737,7 +632,6 @@ https://www.aliyun.com/product/sms
 
 - ﻿方便快捷，无需注册，直接登录
 - ﻿使用短信验证码作为登录凭证，无需记忆密码
-
 - 安全
 
 登录流程：
@@ -748,17 +642,12 @@ https://www.aliyun.com/product/sms
 
 注意：通过手机验证码登录，手机号是区分不同用户的标识。
 
-
-
 梳理一下登录时前端页面和服务端的交互过程：
 
 1. 在登录页面(front/page/login.html)输入手机号，点击【获取验证码】按钮，页面发送司jax请求，在服务端调用短信服务API给指定手机号发送验证码短信
-
 2. 在登录页面输入验证码，点击【登录】按钮，发送司jax请求，在服务端处理登录请求
 
 开发手机验证码登录功能，其实就是在服务端编马代码去处理前端页面发送的这2次请求即可。
-
-
 
 🔖 阿里sms 的key
 
@@ -772,17 +661,12 @@ https://www.aliyun.com/product/sms
 
 用户登录成功后跳转到系统首页，在首页需要根据分类来展示菜品和套餐。如果菜品设置了口味信息，需要展示 **选择观格** 按钮，否则显示 **+**按钮。
 
-
-
 梳理一下前端页面和服务端的交互过程：
 
 1. 页面(front/index.html)发送司jax请求，获取分类数据（菜品分类和套餐分类）
-
 2. 页面发送ajax请求，获取第一个分类下的菜品或者套餐
 
 开发菜品展示功能，其实就是在服务端编写代码去处理前端页面发送的这2次请求即可。
-
-
 
 ### 购物车
 
@@ -792,14 +676,10 @@ https://www.aliyun.com/product/sms
 
 ![](images/image-20230401203133345.png)
 
-
-
 梳理一下购物车操作时前端页面和服务端的交互过程：
 
 1. 点击【加入购物车】或者 + 按钮，页面发送司jax请求，请求服务端，将菜品或者套餐添加到购物车
-
 2. ﻿﻿点击购物车图标，页面发送ajax请求，请求服务端查询购物车中的莱品和套餐
-
 3. ﻿﻿点击清空购物车按钮，页面发送ajax请求，请求服务端来执行清空购物车操作
 
 ### 用户下单
@@ -811,11 +691,9 @@ https://www.aliyun.com/product/sms
 3. ﻿﻿在订单确认页面，发送ajax请求，请求服务端获取当前登录用户的购物车数据
 4. ﻿﻿在订单确认页面点击【去支付】按钮，发送司jax请求，请求服务端完成下单操作
 
-
-
 ## Git
 
-## Linux 
+## Linux
 
 ### 项目部署
 
@@ -823,23 +701,15 @@ https://www.aliyun.com/product/sms
 
 #### 通过shell脚本自动部署项目
 
-
-
 ## Redis课程
 
-
-
-
-
-----
+---
 
 优化
 
 ## 缓存优化
 
 ### 缓存环境搭建
-
-
 
 ### 缓存短信验证码
 
@@ -860,8 +730,6 @@ https://www.aliyun.com/product/sms
     </dependency>
 ```
 
-
-
 ```java
             // 验证码保存到session
 //            session.setAttribute(phone, code);
@@ -880,8 +748,6 @@ https://www.aliyun.com/product/sms
             // 用户登录成功，删除Redis中缓存的验证码
             redisTemplate.delete(phone);
 ```
-
-
 
 ### 缓存菜品数据
 
@@ -912,17 +778,11 @@ redisTemplate.opsForValue().set(key, dishDtoList, 60, TimeUnit.MINUTES);
 
 ```
 
-
-
 ```java
 // 清理对应分类下的菜品缓存数据
 String key = "dish_" + dishDto.getCategoryId() + "_1";
 redisTemplate.delete(key);
 ```
-
-
-
-
 
 ### Spring Cache
 
@@ -932,7 +792,7 @@ redisTemplate.delete(key);
 
 Spring Cache是一个框架，实现了基于==注解==的缓存功能，只需要简单地加一个注解，就能实现缓存功能。
 
-Spring Cache提供了一层抽象，底层可以切换不同的cache实现。具体就是通过`CacheManager`接口来统一不同的缓存技术。
+Spring Cache提供了一层抽象，底层可以切换不同的cache实现。具体就是通过 `CacheManager`接口来统一不同的缓存技术。
 
 CacheManager是Spring提供的各种缓存技术抽象接口。
 
@@ -945,30 +805,21 @@ CacheManager是Spring提供的各种缓存技术抽象接口。
 ![](images/image-20230403162204415.png)
 
 - `@EnableCaching`，开启缓存注解功能，使用在启动类上。
-
 - `@Cacheable`，在方法执行前spring先查看缓存中是否有数据，如果有数据，则直接返回缓存数据;若没有数据，调用方法并将方法返回值放到缓存中。【==查询==】
-
 - `@CachePut`，将方法的返回值放到缓存中，一般用在==新增==方法上。
-
 - `@CacheEvict`，将一条或多条数据从缓存中删除。【==删除、更新==】时都删除缓存
 
-
-
-在spring boot项目中，使用缓存技术只需在项目中导入相关缓存技术的依赖包，并在启动类上使用`@EnableCaching`开启缓存支持即可。
+在spring boot项目中，使用缓存技术只需在项目中导入相关缓存技术的依赖包，并在启动类上使用 `@EnableCaching`开启缓存支持即可。
 
 例如，使用Redis作为缓存技术，只需要导入Spring data Redis的maven坐标即可。
 
 **pom文件中导入是哪个缓存，Spring Cache就使用那个缓存技术。**
 
-
-
 Spring Cache的基础功能在springweb的**spring-context**包内，不需要再另外导入包了：
 
 ![](images/image-20230403162732853.png)
 
-`ConcurrentMapCacheManager`是`CacheManager`接口的基础实现，其使用`ConcurrentMap`为基础实现缓存的。
-
-
+`ConcurrentMapCacheManager`是 `CacheManager`接口的基础实现，其使用 `ConcurrentMap`为基础实现缓存的。
 
 #### 测试项目【cache_demo】
 
@@ -1057,22 +908,19 @@ public class UserController {
 在Spring Boot项目中使用Spring Cache的操作步骤(使用redis缓存技术）：
 
 1. ﻿﻿导入maven坐标
-    spring-boot-starter-data-redis, spring-boot-starter-cache
+   spring-boot-starter-data-redis, spring-boot-starter-cache
 
-    ```xml
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-cache</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-redis</artifactId>
-    </dependency>
-    ```
-    
-    
-    
+   ```xml
+   <dependency>
+     <groupId>org.springframework.boot</groupId>
+     <artifactId>spring-boot-starter-cache</artifactId>
+   </dependency>
+
+   <dependency>
+     <groupId>org.springframework.boot</groupId>
+     <artifactId>spring-boot-starter-data-redis</artifactId>
+   </dependency>
+   ```
 2. ﻿﻿配置application.yml
 
    ```yaml
@@ -1085,14 +933,8 @@ public class UserController {
        redis:
          time-to-live: 1800000 # 设置缓存过期时间，可选
    ```
-
-   
-
-3. ﻿﻿在启动类上加入`@EnableCaching`注解，开启缓存注解功能
-
+3. ﻿﻿在启动类上加入 `@EnableCaching`注解，开启缓存注解功能
 4. ﻿﻿在controller的方法上加入@Cacheable、@CacheEvict等注解，进行缓存操作
-
-
 
 ### 使用Spring Cache缓存套餐数据
 
@@ -1110,17 +952,13 @@ public class UserController {
 4. ﻿﻿在Setmealcontroller的list方法上加入@Cacheable注解
 5. ﻿﻿在Setmealcontroller的save和delete方法上加入CacheEvict注解
 
-
-
-注意把返回结果`R`继承序列化，因为缓存时要把结果序列化
+注意把返回结果 `R`继承序列化，因为缓存时要把结果序列化
 
 报错：
 
 ```java
 java.lang.IllegalArgumentException: DefaultSerializer requires a Serializable payload but received an object of type [com.andyron.takeout.common.R]
 ```
-
-
 
 ## MySQL主从复制
 
@@ -1185,11 +1023,9 @@ Grant REPLICATION SlAVE ON *.* to 'xiaoming2'@'%';
 FLUSH PRIVILEGES;
 ```
 
-
-
 注：上面SQL的作用是创建一个用户xiaoming，密码为Root@123456，并且给xiaoming用户授予**REPLICATION SLAVE** 权限。常用于建立复制时所需要用到的用户权限，也就是slave必须被master授权具有该权限的用户，才能通过该用户复制。
 
-第四步：登录Mysql数据库，执行下面SQL，记录下结果中**File**和**Position**的值`show master status;`
+第四步：登录Mysql数据库，执行下面SQL，记录下结果中**File**和**Position**的值 `show master status;`
 
 ```shell
 mysql> show master status;
@@ -1202,8 +1038,6 @@ mysql> show master status;
 ```
 
 注：上面SQL的作用是查看Master的状态，执行完此SQL后不要再执行任何操作
-
-
 
 #### 配置-从库Slave
 
@@ -1227,8 +1061,6 @@ start slave;
 
 CHANGE MASTER TO master_host='10.211.55.5', master_user='xiaoming2', master_password='Root@123456', master_log_file='mysql-bin.000001', master_log_pos=1580;
 ```
-
-
 
 ```mysql
 stop slave;
@@ -1255,7 +1087,7 @@ Last_IO_Errno: 2061
 Last_IO_Error: error connecting to master 'xiaoming@10.211.55.5:3306' - retry-time: 60 retries: 6 message: Authentication plugin 'caching_sha2_password' reported error: Authentication requires secure connection.
 ```
 
->  🔖解决https://blog.csdn.net/wawa8899/article/details/86689618
+> 🔖解决https://blog.csdn.net/wawa8899/article/details/86689618
 >
 > MySQL8.0默认指定使用需要SSL的身份验证插件caching_sha2_password，而我们在创建同步复制账号时候没有指定REQUIRE SSL。为了降低这件事情的复杂性，我们选择了社区的解决方法，选择绕过SSL插件的验证，改为mysql_native_password验证来做同步复制。
 
@@ -1273,10 +1105,6 @@ Last_IO_Error: error connecting to master 'xiaoming@10.211.55.5:3306' - retry-ti
 > Last_SQL_Errno: 1049
 > Last_SQL_Error: Coordinator stopped because there were error(s) in the worker(s). The most recent failure being: Worker 1 failed executing transaction 'ANONYMOUS' at master log mysql-bin.000001, end_log_pos 22
 > ```
->
-> 
-
-
 
 ### 读写分离案例
 
@@ -1288,7 +1116,7 @@ Last_IO_Error: error connecting to master 'xiaoming@10.211.55.5:3306' - retry-ti
 
 #### Sharding-JDBC介绍
 
-Sharding-JDBC定位为轻量级ava框架，在Java的JDBC层提供的额外服务。它使用客户端直连数据库，以jar包形式提供服务，无需额外部署和依赖，可理解为增强版的JDBC驱动，完全兼容JDBC和各种ORM框架。
+Sharding-JDBC定位为轻量级Java框架，在Java的JDBC层提供的额外服务。它使用客户端直连数据库，以jar包形式提供服务，无需额外部署和依赖，可理解为增强版的JDBC驱动，完全兼容JDBC和各种ORM框架。
 
 使用Sharding-JDBC可以在程序中轻松的实现数据库读写分离。
 
@@ -1309,8 +1137,6 @@ Sharding-JDBC定位为轻量级ava框架，在Java的JDBC层提供的额外服�
       <version>4.0.0-RC1</version>
     </dependency>
 ```
-
-
 
 2. ﻿﻿在配置文件中配置读写分离规则
 
@@ -1355,8 +1181,6 @@ spring:
         show: true  # 在控制台开启SQL显示
 ```
 
-
-
 3. ﻿﻿在配置文件中配置**允许bean定义覆盖**配置项
 
 错误：
@@ -1372,7 +1196,7 @@ Consider renaming one of the beans or enabling overriding by setting spring.main
 
 ```
 
-原因是`SpringBootConfiguration`和`DruidDataSourceAutoConfigure`都配置了数据源，冲突了。
+原因是 `SpringBootConfiguration`和 `DruidDataSourceAutoConfigure`都配置了数据源，冲突了。
 
 需要配置允许覆盖
 
@@ -1386,13 +1210,12 @@ spring:
 🔖报错
 
 ```
+
 ```
 
 ### 项目中实现读写分离
 
 🔖
-
-
 
 ## Nginx
 
@@ -1411,15 +1234,10 @@ Nginx是由伊戈尔•赛索耶夫为俄罗斯访问量第二的Rambler.ru站�
 安装过程：
 
 1. 安装依赖包 `yum -y install gcc pcre-devel zlib-devel openssl openssl-devel`
-
 2. 下载Nginx安装包 `wget https://nginx.org/download/nginx-1.22.1.tar.gz`
-
 3. ﻿﻿解压 `tar -zxvf nginx-1.22.1.tar.gz`
-
 4. ﻿﻿﻿`cd nginx-1.22.1`
-
 5. `./configure --prefix=/usr/local/nginx`
-
 6. `make && make install`
 
 #### Nginx目录结构
@@ -1449,17 +1267,14 @@ ps -ef | grep nginx
 ./nginx -s reload
 ```
 
-
-
 ### Nginx配置文件结构
 
 Nginx配置文件(conf/nginx.conf)整体分为三部分：
 
 - **全局块**  和Nginx运行相关的全局配置
-
 - **events块**  和网络连接相关的配置
-
 - **http块**  代理、缓存、日志记录、虛拟主机配置
+
   + http全局块
   + ==Server块==
     + Server全局块
@@ -1496,19 +1311,19 @@ server {
 
 是一个位于客户端和原始服务器(origin server)之间的服务器，为了从原始服务器取得内容，客户端向代理发送一个请求并指定目标(原始服务器)，然后代理向原始服务器转交请求并将获得的内容返回给客户端。
 
-正向代理的典型用途是<u>为在防火墙内的局域网客户端提供访问internet的途径</u>。
+正向代理的典型用途是`<u>`为在防火墙内的局域网客户端提供访问internet的途径`</u>`。
 
-正向代理一般是在**客户端设置代理服务器**，通过代理服务器转发请求，最终访问到目标服务器。 
+正向代理一般是在**客户端设置代理服务器**，通过代理服务器转发请求，最终访问到目标服务器。
 
 ![](images/image-20230428123208542.png)
 
 - 反向代理（客户不知道反向dialing服务器存在）
 
-反向代理服务器位于用户与目标服务器之间，但是<u>对于用户而言，反向代理服务器就相当于目标服务器</u>，即用户直接访问反向代理服务器就可以获得目标服务器的资源，反向代理服务器负责将请求转发给目标服务器。
+反向代理服务器位于用户与目标服务器之间，但是`<u>`对于用户而言，反向代理服务器就相当于目标服务器`</u>`，即用户直接访问反向代理服务器就可以获得目标服务器的资源，反向代理服务器负责将请求转发给目标服务器。
 
-用户不需要知道目标服务器的地址，也无须在用户端作任何设定。 
+用户不需要知道目标服务器的地址，也无须在用户端作任何设定。
 
-![](images/image-20230428123313289.png)  
+![](images/image-20230428123313289.png)
 
 - 配置反向代理
 
@@ -1597,8 +1412,6 @@ upstream targetserver {
 }
 ```
 
-
-
 ## 前后端分离开发
 
 ### 问题说明
@@ -1606,11 +1419,8 @@ upstream targetserver {
 ![](images/image-20230428152353795.png)
 
 - 开发人员同时负责前端和后端代码开发，分工不明确
-
 - 开发效率低
-
 - 前后端代码混合在一个工程中，不便于管理
-
 - 对开发人员要求高，人员招聘困难
 
 ### 介绍
@@ -1625,7 +1435,7 @@ upstream targetserver {
 
 ### 开发流程
 
-前后端分离开发后，面临一个问题，就是前端开发人员和后端开发人员如何进行配合来共同开发一个项目？
+前后端分离开发后，面临一个问题，就是前端开发人员和后端开发人员**如何进行配合来共同开发一个项目**？
 
 可以按照如下流程进行：
 
@@ -1640,15 +1450,15 @@ upstream targetserver {
 开发工具
 
 - ﻿﻿Visual Studio Code
-- ﻿﻿builder
+- ﻿﻿hbuilder
 
 技术框架
 
 - ﻿﻿nodejs
 - ﻿﻿VUE
 - ﻿﻿ElementUl
-- ﻿﻿mock
-- ﻿﻿webpack
+- ﻿﻿mock   模拟一些数据用于前端测试
+- ﻿﻿webpack   前端打包工具
 
 ## Yapi
 
@@ -1664,6 +1474,12 @@ YApi让接口开发更简单高效，让接口的管理更具可读性、可维�
 
 要使用YApi，需要自己进行部署。
 
+> 原理就是，后端通过swagger导出接口相关信息（json文件），然后用YApi导入生成接口文档供前端或后端其他人员查看使用
+
+YApi已经停止更新
+
+🔖 可以尝试使用apifox
+
 ### 部署
 
 #### MongoDB
@@ -1677,8 +1493,6 @@ MongoDB下载解压就行
 ```
 
 端口：27017
-
-
 
 ```sql
 查看正在使用的数据库：db
@@ -1697,11 +1511,9 @@ db.createUser({ user: "andy", pwd: "33824", roles: [{ role: "userAdminAnyDatabas
 
 ```
 
-
-
 ### 使用方式
 
-🔖🔖，配置MongoDB账号出问题
+配置MongoDB账号出问题
 
 ```shell
 ➜  vendors git:(master) ✗ npm run install-server
@@ -1725,8 +1537,6 @@ Error: Cannot read properties of undefined (reading 'collection')
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
 ```
 
-
-
 ## Swagger
 
 ### 介绍
@@ -1735,9 +1545,7 @@ Error: Cannot read properties of undefined (reading 'collection')
 
 官网：https://swagger.io/
 
-knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案。
-
-
+**knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案。**
 
 ```xml
     <dependency>
@@ -1756,8 +1564,6 @@ knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案。
 3. ﻿﻿设置静态资源，否则接口文档页面无法访问
 4. ﻿﻿在LoginCheckFilter中设置不需要处理的请求路径
 
-
-
 ### 常用注解
 
 ![](images/image-20230428193706816.png)
@@ -1774,8 +1580,6 @@ public R<Page> page(int page, int pageSize, String name) {
 }
 ```
 
-
-
 ## 项目部署
 
 ### 部署架构
@@ -1786,33 +1590,61 @@ public R<Page> page(int page, int pageSize, String name) {
 
 服务器：
 
-- ﻿﻿192.168.138.100（服务器A）
-   Nginx：部署前端项目、配置反向代理
-   Mysql：主从复制结构中的主库
-- ﻿192.168.138.101（服务器B）
-   jdk：运行java项目
-   git：版本控制工具
-   maven：项目构建工具
-   jar: Sorina Boot项目打成jar包基于内置Tomcat运行
-   Mysql：主从复制结构中的从库
-- ﻿﻿172.17.2.94（服务器C）
-   Redis：缓存中间件
-
-
+- ﻿﻿服务器A：centos9-2  10.211.55.6
+  Nginx：部署前端项目、配置反向代理
+  Mysql：主从复制结构中的主库
+- ﻿服务器B：centos9  10.211.55.5
+  jdk：运行java项目
+  git：版本控制工具
+  maven：项目构建工具
+  jar: Sorina Boot项目打成jar包基于内置Tomcat运行
+  Mysql：主从复制结构中的从库
+- ﻿﻿服务器C：debain 10.211.55.8
+  Redis：缓存中间件
 
 ### 部署前端项目
 
-🔖p190
-
 ![](images/image-20230428200626277.png)
 
+```nginx
+    server {
+        listen 80;
+        server_name localhost;
+        location / {
+          root html/dist;
+          index index.html;
+        }
+        # 反向代理配置
+        location ^~ /api/ {
+          rewrite ^/api/(.*)$ /$1 break;
+          proxy_pass http://10.211.55.5:8080;
+        }
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+    }
+```
 
+http://10.211.55.6/api/employee/login   -> http://10.211.55.5:8080/employee/login
+
+```shell
+/usr/local/nginx/html/dist/
+```
+
+http://10.211.55.6/
+
+```shell
+ps -ef | grep nginx
+```
 
 ### 部署后端项目
 
-🔖p191
+centos9  10.211.55.5
 
-
+```
+/usr/local/javaapp/artakeout
+```
 
 ```shell
 #!/bin/sh
@@ -1821,7 +1653,7 @@ echo  自动化部署脚本启动
 echo =================================
 
 echo 停止原来运行中的工程
-APP_NAME=reggie_take_out
+APP_NAME=artakeout
 
 tpid=`ps -ef|grep $APP_NAME|grep -v grep|grep -v kill|awk '{print $2}'`
 if [ ${tpid} ]; then
@@ -1838,10 +1670,10 @@ else
 fi
 
 echo 准备从Git仓库拉取最新代码
-cd /usr/local/javaapp/reggie_take_out
+cd /usr/local/javaapp/artakeout
 
 echo 开始从Git仓库拉取最新代码
-git pull
+# git pull
 echo 代码拉取完成
 
 echo 开始打包
@@ -1850,13 +1682,15 @@ output=`mvn clean package -Dmaven.test.skip=true`
 cd target
 
 echo 启动项目
-nohup java -jar reggie_take_out-1.0-SNAPSHOT.jar &> reggie_take_out.log &
+nohup java -jar artakeout-1.0.jar &> artakeout.log &
 echo 项目启动完成
 ```
 
+```
+ps -ef | grep java
+```
 
-
-
+需要修改配置文件中 图片文件的路径，及其上传图片到服务器
 
 > 🔖 问题合集
 >
@@ -1864,8 +1698,3 @@ echo 项目启动完成
 > - Java 接口 public是否可以省略
 > - 没有支付功能
 > - 后端登录后，前端不要再登录
-
-
-
-
-
