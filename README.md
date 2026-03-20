@@ -1,17 +1,9 @@
 外卖
 ----
 
-https://www.bilibili.com/video/BV13a411q753
+项目地址：https://github.com/andyRon/ARTakeout
 
-> http://localhost:8080/backend/index.html
->
-> http://localhost:8080/front/index.html
->
-> http://localhost:8080/doc.html
->
-> 前端页面获取的，值得研究
-
-## 软件开发整体介绍
+## 1 软件开发整体介绍
 
 ### 软件开发流程
 
@@ -915,7 +907,7 @@ public class UserController {
      <groupId>org.springframework.boot</groupId>
      <artifactId>spring-boot-starter-cache</artifactId>
    </dependency>
-
+   
    <dependency>
      <groupId>org.springframework.boot</groupId>
      <artifactId>spring-boot-starter-data-redis</artifactId>
@@ -964,7 +956,7 @@ java.lang.IllegalArgumentException: DefaultSerializer requires a Serializable pa
 
 读写分离
 
-![image-20230427205455926](images/image-20230427205455926.png)
+![](images/image-20230427205455926.png)
 
 ### mysql主从复制介绍
 
@@ -1456,7 +1448,7 @@ upstream targetserver {
 
 - ﻿﻿nodejs
 - ﻿﻿VUE
-- ﻿﻿ElementUl
+- ﻿﻿ElementUI
 - ﻿﻿mock   模拟一些数据用于前端测试
 - ﻿﻿webpack   前端打包工具
 
@@ -1698,3 +1690,19 @@ ps -ef | grep java
 > - Java 接口 public是否可以省略
 > - 没有支付功能
 > - 后端登录后，前端不要再登录
+
+
+
+## Ref
+
+https://www.bilibili.com/video/BV13a411q753
+
+
+
+> http://localhost:8080/backend/index.html
+>
+> http://localhost:8080/front/index.html
+>
+> http://localhost:8080/doc.html
+>
+> 前端页面获取的，值得研究
